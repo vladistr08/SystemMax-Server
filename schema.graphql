@@ -1,0 +1,22 @@
+scalar DateTime
+scalar Date
+
+type Query {
+    """
+    - query for getting the api version
+    """
+    version: String
+
+}
+
+type Mutation {
+    """
+    - query for getting the api version
+    """
+    version: String
+}
+
+schema {
+    query: Query
+    mutation: Mutation
+}

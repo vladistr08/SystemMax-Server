@@ -1,0 +1,32 @@
+{
+  "name": "system-max-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/server.js",
+  "scripts": {
+    "serve": "nodemon src/server.ts",
+    "dev": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run serve\"",
+    "build": "tsc -p tsconfig.json",
+    "check-env": "node -e 'require(\"./dist/config/env\").checkEnv()'",
+    "start": "node dist/server.js",
+    "prod": "forever start --uid \"${PWD##*/}\" --append dist/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "@types/uuid": "^9.0.2",
+    "apollo-server-express": "^3.12.0",
+    "concurrently": "^8.2.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "apollo-server": "^3.12.0",
+    "bcrypt": "^5.1.0",
+    "graphql": "^16.7.1",
+    "tslog": "^4.9.2",
+    "uuid": "^9.0.0"
+  }
+}
