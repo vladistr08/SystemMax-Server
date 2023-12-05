@@ -6,7 +6,7 @@ import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-co
 import resolvers from '../resolvers'
 
 const typeDefs = gql(
-    fs.readFileSync(path.join(__dirname, '../../schema.graphql'), 'utf8'),
+  fs.readFileSync(path.join(__dirname, '../../schema.graphql'), 'utf8'),
 )
 
 export default {

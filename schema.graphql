@@ -1,11 +1,41 @@
 scalar DateTime
 scalar Date
 
+input createUserInput{
+    username: String!
+    password: String!
+    email: String
+}
+
+type createUserResult{
+    user: User
+}
+
+input loginUserInput{
+    username: String!
+    password: String!
+}
+
+type User{
+    userId: String
+    username: String
+    password: String
+    email: String
+}
+
+type loginUserResult{
+    user: User
+}
+
 type Query {
     """
     - query for getting the api version
     """
     version: String
+    """
+    - auth
+    """
+    loginUser(input: loginUserInput!): loginUserResult
 
 }
 
@@ -14,6 +44,10 @@ type Mutation {
     - query for getting the api version
     """
     version: String
+    """
+    - create user/auth
+    """
+    createUser(input: createUserInput!): createUserResult
 }
 
 schema {

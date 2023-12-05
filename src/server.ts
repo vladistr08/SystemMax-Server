@@ -6,6 +6,7 @@ import { log } from './components/log'
 import env from './config/env'
 
 import apolloConfig from './config/apollo-server-config'
+import { connectToDatabase } from './db'
 
 //import {connectToDatabase} from './db'
 
@@ -22,7 +23,7 @@ const server = new ApolloServer(apolloConfig)
 server
   .start()
   .then(() => server.applyMiddleware({ app }))
-  //.then(() => connectToDatabase())
+  .then(() => connectToDatabase())
   .then(() => app.listen({ port: env.PORT }))
   .then(() =>
     log.info(

@@ -13,6 +13,9 @@ interface IEnv {
 
   // API Port
   PORT: number
+
+  // Mandatory
+  MONGO_CONNECTION_URL: string
 }
 
 const defaults: IEnv = {
@@ -21,6 +24,9 @@ const defaults: IEnv = {
 
   // API Port
   PORT: 9330,
+
+  // Mandatory
+  MONGO_CONNECTION_URL: '',
 }
 
 const env: IEnv = {
