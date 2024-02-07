@@ -1,13 +1,14 @@
-import { IUser } from '../../models/user'
-import { loginUser } from '../../db/user'
+import { IUser } from '../../models/User'
+import UserDBClient from '../../dynamoDB/User'
+import log from '../../components/log'
 
 interface ILoginInput {
-  username: string
+  email: string
   password: string
 }
 
 interface ILoginResult {
-  user: IUser | undefined
+  user: IUser | null
 }
 
 export default async (
@@ -15,12 +16,17 @@ export default async (
   { input }: { input: ILoginInput },
 ): Promise<ILoginResult> => {
   try {
-    const user = await loginUser({
-      username: input.username,
-      password: input.password,
-    })
-    return { user: user }
+    const instance = UserDBClient.getInstance()
+    const loginResult = await instance.loginUser({ ...input })
+
+    if (!loginResult) {
+      log.error('Failed to login user')
+      return { user: null }
+    }
+
+    return { user: loginResult }
   } catch (e) {
-    throw new Error(`Error at login resolver ${e.message}`)
+    log.error(`Error at Login Resolver ${e.message}`)
+    return { user: null }
   }
 }

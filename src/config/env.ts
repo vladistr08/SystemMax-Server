@@ -15,7 +15,7 @@ interface IEnv {
   PORT: number
 
   // Mandatory
-  MONGO_CONNECTION_URL: string
+  DYNAMODB_USER_TABLE_NAME: string
 }
 
 const defaults: IEnv = {
@@ -26,7 +26,7 @@ const defaults: IEnv = {
   PORT: 9330,
 
   // Mandatory
-  MONGO_CONNECTION_URL: '',
+  DYNAMODB_USER_TABLE_NAME: '',
 }
 
 const env: IEnv = {

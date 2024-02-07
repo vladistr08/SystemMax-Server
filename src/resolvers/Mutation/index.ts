@@ -7,7 +7,7 @@ import { IResolvers } from '@graphql-tools/utils'
  *
  * @return {Object}
  */
-const queries = fs
+const mutations = fs
   .readdirSync(path.join(__dirname))
   .reduce((acc: IResolvers, fileName) => {
     if (
@@ -25,4 +25,4 @@ const queries = fs
     return acc
   }, {})
 
-export default queries
+export default mutations

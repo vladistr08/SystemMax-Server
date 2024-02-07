@@ -1,4 +1,4 @@
-import { log } from '../components/log'
+import log from '../components/log'
 
 log.debug('Initialize the server')
 

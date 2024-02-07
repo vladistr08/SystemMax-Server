@@ -4,7 +4,8 @@ scalar Date
 input createUserInput{
     username: String!
     password: String!
-    email: String
+    email: String!
+    name: String!
 }
 
 type createUserResult{
@@ -12,15 +13,17 @@ type createUserResult{
 }
 
 input loginUserInput{
-    username: String!
+    email: String!
     password: String!
 }
 
 type User{
-    userId: String
+    user_id: String
     username: String
-    password: String
+    passwordHash: String
     email: String
+    name: String
+    createdAt: String
 }
 
 type loginUserResult{

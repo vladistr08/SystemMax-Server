@@ -1,3 +1,12 @@
-import { Logger, ILogObj } from 'tslog'
+import * as winston from 'winston'
 
-export const log: Logger<ILogObj> = new Logger()
+const log = winston.createLogger({
+  level: 'info',
+  format: winston.format.json(),
+  transports: [
+    new winston.transports.Console(),
+    new winston.transports.File({ filename: 'combined.log' }),
+  ],
+})
+
+export default log
