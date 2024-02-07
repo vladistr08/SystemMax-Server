@@ -4,6 +4,7 @@ import { gql } from 'apollo-server'
 import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core'
 
 import resolvers from '../resolvers'
+import { IContext } from 'types'
 
 const typeDefs = gql(
   fs.readFileSync(path.join(__dirname, '../../schema.graphql'), 'utf8'),
@@ -16,4 +17,5 @@ export default {
   tracingEnabled: true,
   playground: true,
   plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
+  context: ({ req }): IContext => ({ user: req.user }),
 }

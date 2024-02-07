@@ -23,7 +23,6 @@ module.exports = {
         allowAsParameter: true, // Allow type assertion in call and new expression, default false
       },
     ],
-    '@typescript-eslint/no-explicit-any': ['error'],
     '@typescript-eslint/explicit-function-return-type': [
       'error',
       {

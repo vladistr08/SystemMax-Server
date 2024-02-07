@@ -1,8 +1,8 @@
 import UserDBClient from '../../dynamoDB/User'
 import log from '../../components/log'
+import { IContext } from 'types'
 
 interface IUserUpdateInput {
-  email: string
   updates: {
     username?: string
     email?: string
@@ -18,17 +18,17 @@ interface IUserUpdateResult {
 export default async (
   _: object,
   { input }: { input: IUserUpdateInput },
+  { user }: IContext,
 ): Promise<IUserUpdateResult> => {
+  console.log(user)
+  if (!user) {
+    throw new Error('Not authenticated')
+  }
   try {
     const instance = UserDBClient.getInstance()
 
-    const user_id = await instance.findUserIdByEmail(input.email)
-    if (!user_id) {
-      log.error(`No user found for email: ${input.email}`)
-      return { isUpdated: false }
-    }
     const updateUserResult = await instance.updateUser({
-      user_id,
+      user_id: user.userId,
       updates: input.updates,
     })
 

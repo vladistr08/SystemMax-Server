@@ -17,25 +17,26 @@ export default async (
   _: object,
   { input }: { input: IUserCreateInput },
 ): Promise<IUserCreateResult> => {
+  const ResultEmptyObject = { user: null, token: null }
   try {
     const instance = UserDBClient.getInstance()
 
     const user_id = await instance.findUserIdByEmail(input.email)
     if (user_id) {
       log.error(`User already exists: ${input.email}`)
-      return { user: null }
+      return ResultEmptyObject
     }
 
     const registerResult = await instance.registerUser({ ...input })
 
     if (!registerResult) {
       log.error('User was no registered')
-      return { user: null }
+      return ResultEmptyObject
     }
 
     return { user: registerResult }
   } catch (e) {
     log.error(`Error at Register Resolver: ${e?.message}`)
-    return { user: null }
+    return ResultEmptyObject
   }
 }
