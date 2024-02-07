@@ -2,23 +2,30 @@ import { IUser } from '../../models/User'
 import UserDBClient from '../../dynamoDB/User'
 import log from '../../components/log'
 
-interface IUserInput {
+interface IUserCreateInput {
   username: string
   email: string
   password: string
   name: string
 }
 
-interface IUserResult {
+interface IUserCreateResult {
   user: IUser | null
 }
 
 export default async (
   _: object,
-  { input }: { input: IUserInput },
-): Promise<IUserResult> => {
+  { input }: { input: IUserCreateInput },
+): Promise<IUserCreateResult> => {
   try {
     const instance = UserDBClient.getInstance()
+
+    const user_id = await instance.findUserIdByEmail(input.email)
+    if (user_id) {
+      log.error(`User already exists: ${input.email}`)
+      return { user: null }
+    }
+
     const registerResult = await instance.registerUser({ ...input })
 
     if (!registerResult) {

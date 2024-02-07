@@ -30,6 +30,22 @@ type loginUserResult{
     user: User
 }
 
+input updateUserInput{
+    email: String!
+    updates: toUpdateUserDataInput!
+}
+
+input toUpdateUserDataInput{
+    username: String
+    email: String
+    password: String
+    name: String
+}
+
+type updateUserResult{
+    isUpdated: Boolean
+}
+
 type Query {
     """
     - query for getting the api version
@@ -51,6 +67,7 @@ type Mutation {
     - create user/auth
     """
     createUser(input: createUserInput!): createUserResult
+    updateUser(input: updateUserInput!): updateUserResult
 }
 
 schema {

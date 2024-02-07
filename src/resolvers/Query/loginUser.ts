@@ -2,22 +2,33 @@ import { IUser } from '../../models/User'
 import UserDBClient from '../../dynamoDB/User'
 import log from '../../components/log'
 
-interface ILoginInput {
+interface IUserLoginInput {
   email: string
   password: string
 }
 
-interface ILoginResult {
+interface IUserLoginResult {
   user: IUser | null
 }
 
 export default async (
   _: object,
-  { input }: { input: ILoginInput },
-): Promise<ILoginResult> => {
+  { input }: { input: IUserLoginInput },
+): Promise<IUserLoginResult> => {
   try {
     const instance = UserDBClient.getInstance()
-    const loginResult = await instance.loginUser({ ...input })
+
+    const user_id = await instance.findUserIdByEmail(input.email)
+
+    if (!user_id) {
+      log.error(`No user found for email ${input.email}`)
+      return { user: null }
+    }
+
+    const loginResult = await instance.loginUser({
+      user_id,
+      password: input.password,
+    })
 
     if (!loginResult) {
       log.error('Failed to login user')
