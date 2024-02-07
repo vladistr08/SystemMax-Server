@@ -31,10 +31,6 @@ type loginUserResult{
     token: String
 }
 
-input updateUserInput{
-    input: toUpdateUserDataInput!
-}
-
 input toUpdateUserDataInput{
     username: String
     email: String
@@ -67,7 +63,7 @@ type Mutation {
     - create user/auth
     """
     createUser(input: createUserInput!): createUserResult
-    updateUser(input: updateUserInput!): updateUserResult
+    updateUser(input: toUpdateUserDataInput!): updateUserResult
 }
 
 schema {

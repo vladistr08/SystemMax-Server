@@ -14,7 +14,6 @@ app.use((req: express.Request, _: never, next) => {
 
   try {
     req['user'] = jwt.verify(authHeader, env.JWT_SECRET_KEY)
-    next()
   } catch (error) {
     log.error('JWT verification failed:', error)
   }

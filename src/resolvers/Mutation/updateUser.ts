@@ -3,12 +3,10 @@ import log from '../../components/log'
 import { IContext } from 'types'
 
 interface IUserUpdateInput {
-  updates: {
-    username?: string
-    email?: string
-    password?: string
-    name?: string
-  }
+  username?: string
+  email?: string
+  password?: string
+  name?: string
 }
 
 interface IUserUpdateResult {
@@ -18,18 +16,19 @@ interface IUserUpdateResult {
 export default async (
   _: object,
   { input }: { input: IUserUpdateInput },
-  { user }: IContext,
+  context: IContext,
 ): Promise<IUserUpdateResult> => {
-  console.log(user)
-  if (!user) {
+  if (!context.user) {
     throw new Error('Not authenticated')
   }
   try {
     const instance = UserDBClient.getInstance()
 
+    console.log(input)
+
     const updateUserResult = await instance.updateUser({
-      user_id: user.userId,
-      updates: input.updates,
+      user_id: context?.user.userId,
+      updates: { ...input },
     })
 
     if (!updateUserResult) {
