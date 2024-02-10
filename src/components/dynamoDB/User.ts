@@ -1,4 +1,3 @@
-// DynamoDBClient.ts
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import {
   DynamoDBDocumentClient,
@@ -9,9 +8,9 @@ import {
 } from '@aws-sdk/lib-dynamodb'
 import * as bcrypt from 'bcrypt'
 import { v4 as uuidv4 } from 'uuid'
-import { IUser } from '../models/User'
-import log from '../components/log'
-import env from '../config/env'
+import { IUser } from '../../models/User'
+import log from '../log'
+import env from '../../config/env'
 
 interface IUserRegistrationParams {
   email: string
@@ -105,7 +104,7 @@ class UserDBClient {
     }
   }
 
-  public async findUserIdByEmail(email: string): Promise<string | null> {
+  public async findUserByEmail(email: string): Promise<IUser | null> {
     const params = {
       TableName: env.DYNAMODB_USER_TABLE_NAME,
       IndexName: 'email-index',
@@ -118,12 +117,27 @@ class UserDBClient {
     try {
       const data = await UserDBClient.client.send(new QueryCommand(params))
       if (data.Items && data.Items.length > 0) {
-        return data.Items[0].user_id
+        return data.Items[0] as IUser
       }
       return null
     } catch (error) {
-      log.error('Error finding user ID by email:', error)
+      throw new Error(`Error finding user ID by email: ${error?.message}`)
+    }
+  }
+
+  public async findUserById(user_id: string): Promise<IUser | null> {
+    const params = {
+      TableName: env.DYNAMODB_USER_TABLE_NAME,
+      Key: { user_id },
+    }
+    try {
+      const data = await UserDBClient.client.send(new GetCommand(params))
+      if (data.Item) {
+        return data.Item as IUser
+      }
       return null
+    } catch (e) {
+      throw new Error(`There was an error getting user by id: ${e?.message}`)
     }
   }
 
@@ -131,12 +145,10 @@ class UserDBClient {
     user_id,
     updates,
   }: IUserUpdateParams): Promise<boolean> {
-    // Inițializarea expresiilor de update
     const updateExpressions: string[] = []
     const expressionAttributeValues: { [key: string]: string } = {}
     const expressionAttributeNames: { [key: string]: string } = {}
 
-    // Adaugă condițiile de update bazate pe câmpurile furnizate în `updates`
     Object.keys(updates).forEach((key) => {
       const attributeKey = `#${key}`
       const attributeValue = `:${key}`
@@ -146,7 +158,6 @@ class UserDBClient {
       expressionAttributeNames[attributeKey] = key
     })
 
-    // Verifică dacă parola trebuie actualizată și hash-uiește noua parolă
     if (updates.password) {
       const passwordHash = await bcrypt.hash(updates.password, 12)
       updateExpressions.push('#passwordHash = :passwordHash')

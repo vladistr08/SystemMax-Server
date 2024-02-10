@@ -9,4 +9,5 @@ export interface DecodedToken {
   name: string
   iat: number
   exp: number
+  jti: string
 }

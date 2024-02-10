@@ -1,6 +1,7 @@
-import UserDBClient from '../../dynamoDB/User'
 import log from '../../components/log'
 import { IContext } from 'types'
+import { updateUser } from '../../controller/dynamoDB/User'
+import { isValidUser } from '../../config/auth'
 
 interface IUserUpdateInput {
   username?: string
@@ -18,16 +19,14 @@ export default async (
   { input }: { input: IUserUpdateInput },
   context: IContext,
 ): Promise<IUserUpdateResult> => {
-  if (!context.user) {
-    throw new Error('Not authenticated')
-  }
   try {
-    const instance = UserDBClient.getInstance()
+    const authResult = await isValidUser(context)
+    if (!context.user || !authResult.isValid) {
+      throw new Error(authResult.message)
+    }
 
-    console.log(input)
-
-    const updateUserResult = await instance.updateUser({
-      user_id: context?.user.userId,
+    const updateUserResult = await updateUser({
+      user_id: context.user.userId,
       updates: { ...input },
     })
 

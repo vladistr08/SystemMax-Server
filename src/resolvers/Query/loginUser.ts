@@ -1,8 +1,9 @@
 import { IUser } from '../../models/User'
-import UserDBClient from '../../dynamoDB/User'
 import log from '../../components/log'
 import * as jwt from 'jsonwebtoken'
 import env from '../../config/env'
+import { findUserByEmail, loginUser } from '../../controller/dynamoDB/User'
+import { v4 as uuidv4 } from 'uuid'
 
 interface IUserLoginInput {
   email: string
@@ -20,16 +21,16 @@ export default async (
 ): Promise<IUserLoginResult> => {
   const ResultEmptyObject = { user: null, token: null }
   try {
-    const instance = UserDBClient.getInstance()
+    const user = await findUserByEmail(input.email)
 
-    const user_id = await instance.findUserIdByEmail(input.email)
+    const user_id = user?.user_id ?? ''
 
-    if (!user_id) {
+    if (!user_id.length) {
       log.error(`No user found for email ${input.email}`)
       return ResultEmptyObject
     }
 
-    const loginResult = await instance.loginUser({
+    const loginResult = await loginUser({
       user_id,
       password: input.password,
     })
@@ -45,6 +46,7 @@ export default async (
         email: loginResult.email,
         name: loginResult.name,
         username: loginResult.username,
+        jti: uuidv4(),
       },
       env.JWT_SECRET_KEY,
       { expiresIn: '1h' },

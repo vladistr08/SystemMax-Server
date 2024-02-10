@@ -5,6 +5,7 @@ import log from './components/log'
 import env from './config/env'
 import apolloConfig from './config/apollo-server-config'
 import * as jwt from 'jsonwebtoken'
+import { DecodedToken } from 'types'
 
 const app: any = express()
 app.use(bodyParser.json({ limit: '10mb' }))
@@ -13,7 +14,7 @@ app.use((req: express.Request, _: never, next) => {
   const authHeader: string = (req.headers && req.headers['authorization']) || ''
 
   try {
-    req['user'] = jwt.verify(authHeader, env.JWT_SECRET_KEY)
+    req['user'] = jwt.verify(authHeader, env.JWT_SECRET_KEY) as DecodedToken
   } catch (error) {
     log.error('JWT verification failed:', error)
   }
