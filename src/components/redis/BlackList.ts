@@ -32,7 +32,6 @@ class RedisBlacklist {
   public async isBlacklisted(jti: string): Promise<boolean> {
     try {
       const result = await RedisBlacklist.client.get(jti)
-      log.info(result)
       return result === 'blacklisted'
     } catch (error) {
       log.error(`Error checking if token is blacklisted: ${error}`)

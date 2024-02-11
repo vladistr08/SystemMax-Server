@@ -18,6 +18,7 @@ interface IEnv {
   DYNAMODB_USER_TABLE_NAME: string
   JWT_SECRET_KEY: string
   REDIS_CONNECTION_URL: string
+  OPENAI_API_KEY: string
 }
 
 const defaults: IEnv = {
@@ -31,6 +32,7 @@ const defaults: IEnv = {
   DYNAMODB_USER_TABLE_NAME: '',
   JWT_SECRET_KEY: '',
   REDIS_CONNECTION_URL: '',
+  OPENAI_API_KEY: '',
 }
 
 const env: IEnv = {
