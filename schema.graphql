@@ -63,6 +63,14 @@ type getAssistantResult {
     message: String
 }
 
+input refreshTokenInput {
+    token: String!
+}
+
+type refreshTokenResult {
+    token: String
+}
+
 type Query {
     """
     - query for getting the api version
@@ -74,6 +82,7 @@ type Query {
     loginUser(input: loginUserInput!): loginUserResult
     getUser(input: getUserInput): getUserResult
     getAssistantResponse(input: getAssistantInput!): getAssistantResult
+    refreshToken(input: refreshTokenInput): refreshTokenResult
 
 }
 
