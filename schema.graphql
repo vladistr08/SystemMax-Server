@@ -62,6 +62,7 @@ input getAssistantInput {
 
 type getAssistantResult {
     message: String
+    chatId: String
 }
 
 input refreshTokenInput {

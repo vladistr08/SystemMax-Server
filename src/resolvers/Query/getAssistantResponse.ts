@@ -23,10 +23,12 @@ interface IGetAssistantResponseResult {
 
 export default async (
   _: object,
-  { chatId, message }: IGetAssistantResponseInput,
+  { input }: { input: IGetAssistantResponseInput },
   context: IContext,
 ): Promise<IGetAssistantResponseResult> => {
   try {
+    const { chatId, message } = input
+
     let chatIdVerified = chatId || ''
     const authResult = await isValidUser(context)
     if (!context.user || !authResult.isValid) {
@@ -51,6 +53,7 @@ export default async (
     }
 
     const messagesLink = await getMessagesByChatId({ chatId: chatIdVerified })
+    console.log({ messagesLink })
     const messageId = messagesLink.length ? messagesLink[0].messageId : uuidv4()
 
     if (!messagesLink.length) {

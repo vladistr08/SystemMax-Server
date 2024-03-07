@@ -2,7 +2,7 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import {
   DynamoDBDocumentClient,
   PutCommand,
-  QueryCommand,
+  ScanCommand,
 } from '@aws-sdk/lib-dynamodb'
 import env from '../../config/env'
 import log from '../log'
@@ -40,9 +40,6 @@ class ChatMessageDBClient {
         }),
       )
 
-      log.info(
-        `Link created successfully between chat ID ${chatId} and message ID ${messageId}`,
-      )
       return true
     } catch (error) {
       log.error(
@@ -57,9 +54,9 @@ class ChatMessageDBClient {
   ): Promise<IChatMessageLink[] | null> {
     try {
       const { Items } = await ChatMessageDBClient.client.send(
-        new QueryCommand({
+        new ScanCommand({
           TableName: env.DYNAMODB_CHAT_MESSAGE_LINK_TABLE_NAME,
-          KeyConditionExpression: 'chat_id = :chatId',
+          FilterExpression: 'chat_id = :chatId',
           ExpressionAttributeValues: {
             ':chatId': chatId,
           },

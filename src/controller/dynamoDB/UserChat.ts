@@ -24,7 +24,6 @@ export const createChatRecord = async (
 
     const success = await userChatDBClient.createChatRecord(params)
     if (success) {
-      log.info('Chat record created successfully')
       return true
     } else {
       throw new Error('Failed to create chat record')

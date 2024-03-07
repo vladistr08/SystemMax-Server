@@ -20,8 +20,9 @@ export default async (
     }
 
     const getChatsResult = await getChatsByUserId(context.user.userId)
+    console.log(getChatsResult)
 
-    if (!getChatsResult) {
+    if (!getChatsResult.length) {
       log.error(`No chats found for userId: ${context.user.userId}`)
     }
 

@@ -19,9 +19,9 @@ interface IGetUserChatResult {
   items: IMessage[]
 }
 
-export const getUserChat = async (
+export default async (
   _: object,
-  { chatId }: IGetUserChatInput,
+  { input }: { input: IGetUserChatInput },
   context: IContext,
 ): Promise<IGetUserChatResult> => {
   try {
@@ -29,6 +29,7 @@ export const getUserChat = async (
     if (!context.user || !authResult.isValid) {
       throw new Error(authResult.message)
     }
+    const { chatId } = input
 
     const userChatLink = await getChatsByUserId(context.user.userId)
     if (!userChatLink.length) {

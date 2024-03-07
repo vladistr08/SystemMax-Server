@@ -2,7 +2,7 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import {
   DynamoDBDocumentClient,
   PutCommand,
-  QueryCommand,
+  ScanCommand,
 } from '@aws-sdk/lib-dynamodb'
 import env from '../../config/env'
 import log from '../log'
@@ -35,9 +35,9 @@ class UserChatDBClient {
   public async getChatsByUserId(userId: string): Promise<IChatID[] | null> {
     try {
       const data = await UserChatDBClient.client.send(
-        new QueryCommand({
+        new ScanCommand({
           TableName: env.DYNAMODB_USER_CHAT_TABLE_NAME,
-          KeyConditionExpression: 'user_id = :userId',
+          FilterExpression: 'user_id = :userId',
           ExpressionAttributeValues: {
             ':userId': userId,
           },
@@ -68,7 +68,6 @@ class UserChatDBClient {
         }),
       )
 
-      log.info('Chat record created successfully')
       return true
     } catch (error) {
       log.error(`Error creating chat record:${error?.message}`)

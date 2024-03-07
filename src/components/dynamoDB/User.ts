@@ -70,8 +70,6 @@ class UserDBClient {
         }),
       )
 
-      log.info('User registered successfully')
-
       return user
     } catch (error) {
       log.error(`Error registering user:${error?.message}`)
@@ -92,7 +90,6 @@ class UserDBClient {
       )
 
       if (Item && (await bcrypt.compare(password, Item?.passwordHash))) {
-        log.info('User logged in successfully')
         return Item as IUser
       } else {
         log.error('Invalid credentials')
@@ -180,7 +177,6 @@ class UserDBClient {
 
     try {
       await UserDBClient.client.send(new UpdateCommand(params))
-      log.info('User updated successfully')
       return true
     } catch (error) {
       log.error('Error updating user:', error)

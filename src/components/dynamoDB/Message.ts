@@ -2,10 +2,11 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import {
   DynamoDBDocumentClient,
   PutCommand,
-  QueryCommand,
+  ScanCommand,
 } from '@aws-sdk/lib-dynamodb'
 import env from '../../config/env'
-import log from '../log' // Adjust the import path as necessary
+import log from '../log'
+import { v4 as uuidv4 } from 'uuid'
 
 interface AddMessageParams {
   messageId: string
@@ -50,13 +51,15 @@ class MessageDB {
       await MessageDB.client.send(
         new PutCommand({
           TableName: env.DYNAMODB_MESSAGE_TABLE_NAME,
-          Item: { message_id: messageId, message_index: messageIndex, message },
+          Item: {
+            message_UUID: uuidv4(),
+            message_id: messageId,
+            message_index: messageIndex,
+            message,
+          },
         }),
       )
 
-      log.info(
-        `Message added successfully with ID: ${messageId} and Index: ${messageIndex}`,
-      )
       return true
     } catch (error) {
       log.error(
@@ -71,9 +74,9 @@ class MessageDB {
   }: GetMessageParams): Promise<IMessage[] | null> {
     try {
       const { Items } = await MessageDB.client.send(
-        new QueryCommand({
+        new ScanCommand({
           TableName: env.DYNAMODB_MESSAGE_TABLE_NAME,
-          KeyConditionExpression: 'message_id = :messageId',
+          FilterExpression: 'message_id = :messageId',
           ExpressionAttributeValues: {
             ':messageId': messageId,
           },
@@ -81,7 +84,6 @@ class MessageDB {
       )
 
       if (Items) {
-        log.info(`Messages retrieved successfully for ID: ${messageId}`)
         return Items.map((item) => ({
           messageId: item.message_id,
           messageIndex: item.message_index,

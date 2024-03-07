@@ -48,7 +48,6 @@ class ChatDB {
         }),
       )
 
-      log.info(`Chat record created successfully for chat ID ${chatId}`)
       return true
     } catch (error) {
       log.error(`Error creating chat record for chat ID ${chatId}: ${error}`)
@@ -66,7 +65,6 @@ class ChatDB {
       )
 
       if (Item) {
-        log.info(`Chat retrieved successfully for chat ID ${chatId}`)
         return { chatId: Item.chatId, createdAt: Item.createdAt }
       } else {
         log.error(`No chat found with ID ${chatId}`)

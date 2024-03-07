@@ -34,7 +34,6 @@ export const addMessageToChat = async ({
       messageId,
     })
     if (success) {
-      log.info('Message added to chat successfully')
       return true
     } else {
       throw new Error('Failed to add message to chat')
