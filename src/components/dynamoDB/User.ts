@@ -20,12 +20,12 @@ interface IUserRegistrationParams {
 }
 
 interface IUserLoginParams {
-  user_id: string
+  userId: string
   password: string
 }
 
 interface IUserUpdateParams {
-  user_id: string
+  userId: string
   updates: Partial<IUserRegistrationParams>
 }
 
@@ -80,14 +80,14 @@ class UserDBClient {
   }
 
   public async loginUser({
-    user_id,
+    userId,
     password,
   }: IUserLoginParams): Promise<IUser | null> {
     try {
       const { Item } = await UserDBClient.client.send(
         new GetCommand({
           TableName: env.DYNAMODB_USER_TABLE_NAME,
-          Key: { user_id },
+          Key: { user_id: userId },
         }),
       )
 
@@ -142,7 +142,7 @@ class UserDBClient {
   }
 
   public async updateUser({
-    user_id,
+    userId,
     updates,
   }: IUserUpdateParams): Promise<boolean> {
     const updateExpressions: string[] = []
@@ -172,7 +172,7 @@ class UserDBClient {
 
     const params = {
       TableName: env.DYNAMODB_USER_TABLE_NAME,
-      Key: { user_id },
+      Key: { user_id: userId },
       UpdateExpression: 'SET ' + updateExpressions.join(', '),
       ExpressionAttributeValues: expressionAttributeValues,
       ExpressionAttributeNames: expressionAttributeNames,

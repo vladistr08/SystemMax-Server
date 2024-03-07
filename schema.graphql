@@ -56,6 +56,7 @@ type getUserResult {
 }
 
 input getAssistantInput {
+    chatId: String
     message: String!
 }
 
@@ -71,6 +72,28 @@ type refreshTokenResult {
     token: String
 }
 
+type Chat {
+    chatId: String
+}
+
+type getUserChatsResult {
+    items: [Chat]
+}
+
+input getUserChatInput{
+    chatId: String!
+}
+
+type Message {
+    messageId: String
+    messageIndex: String
+    message: String
+}
+
+type getUserChatResult {
+    items: [Message]
+}
+
 type Query {
     """
     - query for getting the api version
@@ -83,6 +106,8 @@ type Query {
     getUser(input: getUserInput): getUserResult
     getAssistantResponse(input: getAssistantInput!): getAssistantResult
     refreshToken(input: refreshTokenInput): refreshTokenResult
+    getUserChatRecords: getUserChatsResult
+    getUserChat(input: getUserChatInput!): getUserChatResult
 
 }
 

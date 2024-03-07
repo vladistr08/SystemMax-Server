@@ -25,7 +25,7 @@ class RedisBlacklist {
       await RedisBlacklist.client.set(jti, 'blacklisted', { EX: 3600 })
     } catch (error) {
       log.error(`Error adding token to blacklist: ${error}`)
-      throw error // Rethrow to allow further handling if necessary
+      throw error
     }
   }
 
@@ -44,7 +44,7 @@ class RedisBlacklist {
       await RedisBlacklist.client.del(jti)
     } catch (error) {
       log.error(`Error removing token from blacklist: ${error}`)
-      throw error // Rethrow to allow further handling if necessary
+      throw error
     }
   }
 }

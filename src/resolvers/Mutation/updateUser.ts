@@ -26,7 +26,7 @@ export default async (
     }
 
     const updateUserResult = await updateUser({
-      user_id: context.user.userId,
+      userId: context.user.userId,
       updates: { ...input },
     })
 
