@@ -4,10 +4,6 @@ import { IContext } from 'types'
 import { isValidUser } from '../../config/auth'
 import { addMessage, getMessages } from '../../controller/dynamoDB/Message' // Presupunând că ai modulele necesare
 import { createChat } from '../../controller/dynamoDB/Chat'
-import {
-  addMessageToChat,
-  getMessagesByChatId,
-} from '../../controller/dynamoDB/ChatMessage'
 import { createChatRecord } from '../../controller/dynamoDB/UserChat'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -52,13 +48,7 @@ export default async (
       })
     }
 
-    const messagesLink = await getMessagesByChatId({ chatId: chatIdVerified })
-    console.log({ messagesLink })
-    const messageId = messagesLink.length ? messagesLink[0].messageId : uuidv4()
-
-    if (!messagesLink.length) {
-      await addMessageToChat({ chatId: chatIdVerified, messageId })
-    }
+    const messageId = chatIdVerified ? chatIdVerified : uuidv4()
 
     const messages = await getMessages({ messageId })
 

@@ -14,6 +14,8 @@ export interface IUserChat {
 
 export interface IChatID {
   chatId: string
+  chatName: string
+  timestamp: string
 }
 
 class UserChatDBClient {
@@ -46,7 +48,11 @@ class UserChatDBClient {
 
       if (data.Items) {
         return data.Items.map((item): IChatID => {
-          return { chatId: item.chat_id }
+          return {
+            chatId: item.chat_id,
+            chatName: item.chat_name,
+            timestamp: item.createdAt,
+          }
         })
       }
       return null

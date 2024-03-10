@@ -1,6 +1,5 @@
 import { IContext } from 'types' // Presupunem că ai acest tip definit undeva
 import { isValidUser } from '../../config/auth'
-import { getMessagesByChatId as getChatMessageLinks } from '../../controller/dynamoDB/ChatMessage'
 import { getMessages } from '../../controller/dynamoDB/Message'
 import log from '../../components/log'
 import { getChatsByUserId } from '../../controller/dynamoDB/UserChat'
@@ -10,7 +9,7 @@ interface IGetUserChatInput {
 }
 
 interface IMessage {
-  messageId: string
+  chatId: string
   messageIndex: number
   message: string
 }
@@ -36,12 +35,7 @@ export default async (
       return { items: [] }
     }
 
-    const chatMessageLinks = await getChatMessageLinks({ chatId })
-    if (!chatMessageLinks.length) {
-      return { items: [] }
-    }
-
-    const { messageId } = chatMessageLinks[0]
+    const messageId = chatId
 
     const messages = await getMessages({ messageId })
 

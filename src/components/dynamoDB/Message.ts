@@ -19,7 +19,7 @@ interface GetMessageParams {
 }
 
 export interface IMessage {
-  messageId: string
+  chatId: string
   messageIndex: number
   message: string
 }
@@ -85,7 +85,7 @@ class MessageDB {
 
       if (Items) {
         return Items.map((item) => ({
-          messageId: item.message_id,
+          chatId: item.message_id,
           messageIndex: item.message_index,
           message: item.message,
         })) as IMessage[]
