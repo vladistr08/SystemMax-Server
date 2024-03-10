@@ -8,7 +8,7 @@ import { createChatRecord } from '../../controller/dynamoDB/UserChat'
 import { v4 as uuidv4 } from 'uuid'
 
 interface IGetAssistantResponseInput {
-  chatId?: string
+  chatId?: string // TODO This will no longer be optional in the future
   message: string
 }
 
