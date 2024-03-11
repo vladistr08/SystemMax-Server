@@ -48,6 +48,26 @@ export const getMessages = async ({
   }
 }
 
-//TODO add delete
+interface IDeleteMessageParams {
+  chatId: string
+}
+
+export const deleteMessages = async ({
+  chatId,
+}: IDeleteMessageParams): Promise<boolean> => {
+  const messageDBClient = MessageDB.getInstance()
+  try {
+    const success = await messageDBClient.deleteMessagesByChatId({ chatId })
+    if (success) {
+      return true
+    } else {
+      log.error(`Failed to delete messages for chat ID: ${chatId}`)
+      return false
+    }
+  } catch (error) {
+    log.error(`Error deleting messages for chat ID ${chatId}: ${error.message}`)
+    return false
+  }
+}
 
 //TODO getMessagesByChatName

@@ -1,5 +1,6 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import {
+  DeleteCommand,
   DynamoDBDocumentClient,
   PutCommand,
   ScanCommand,
@@ -13,6 +14,10 @@ export interface IUserChat {
 }
 
 export interface IChatID {
+  chatId: string
+}
+
+interface IDeleteChatRecordParams {
   chatId: string
 }
 
@@ -73,6 +78,26 @@ class UserChatDBClient {
       return true
     } catch (error) {
       log.error(`Error creating chat record:${error?.message}`)
+      return false
+    }
+  }
+
+  public async deleteChatRecord({
+    chatId,
+  }: IDeleteChatRecordParams): Promise<boolean> {
+    try {
+      await UserChatDBClient.client.send(
+        new DeleteCommand({
+          TableName: env.DYNAMODB_USER_CHAT_TABLE_NAME,
+          Key: { chat_id: chatId },
+        }),
+      )
+
+      return true
+    } catch (error) {
+      log.error(
+        `Error deleting chat record for user and chat ID ${chatId}: ${error}`,
+      )
       return false
     }
   }

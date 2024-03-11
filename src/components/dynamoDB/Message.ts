@@ -1,5 +1,6 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import {
+  DeleteCommand,
   DynamoDBDocumentClient,
   PutCommand,
   ScanCommand,
@@ -22,6 +23,10 @@ export interface IMessage {
   chatId: string
   messageIndex: number
   message: string
+}
+
+interface DeleteMessageParams {
+  chatId: string
 }
 
 class MessageDB {
@@ -70,6 +75,43 @@ class MessageDB {
   }
 
   //TODO getMessagesByName
+
+  public async deleteMessagesByChatId({
+    chatId,
+  }: DeleteMessageParams): Promise<boolean> {
+    try {
+      const { Items } = await MessageDB.client.send(
+        new ScanCommand({
+          TableName: env.DYNAMODB_MESSAGE_TABLE_NAME,
+          FilterExpression: 'chat_id = :chatId',
+          ExpressionAttributeValues: {
+            ':chatId': chatId,
+          },
+        }),
+      )
+
+      if (!Items) {
+        log.info(`No messages found for chat ID: ${chatId}`)
+        return false
+      }
+
+      for (const item of Items) {
+        await MessageDB.client.send(
+          new DeleteCommand({
+            TableName: env.DYNAMODB_MESSAGE_TABLE_NAME,
+            Key: {
+              message_id: item.message_id,
+            },
+          }),
+        )
+      }
+
+      return true
+    } catch (error) {
+      log.error(`Error deleting messages for chat ID ${chatId}: ${error}`)
+      return false
+    }
+  }
 
   public async getMessages({
     chatId,

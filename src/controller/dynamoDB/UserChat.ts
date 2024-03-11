@@ -45,4 +45,29 @@ export const getChatsByUserId = async (userId: string): Promise<IChatID[]> => {
   }
 }
 
-//TODO add delete
+interface IDeleteChatRecordParams {
+  chatId: string
+}
+
+export const deleteChatRecord = async ({
+  chatId,
+}: IDeleteChatRecordParams): Promise<boolean> => {
+  try {
+    const userChatDBClient = UserChatDBClient.getInstance()
+
+    const success = await userChatDBClient.deleteChatRecord({ chatId })
+    if (success) {
+      log.info(
+        `Successfully deleted chat record for user and chat ID: ${chatId}.`,
+      )
+      return true
+    } else {
+      throw new Error('Failed to delete chat record')
+    }
+  } catch (error) {
+    log.error(
+      `Error deleting chat record for user and chat ID ${chatId}: ${error.message}`,
+    )
+    throw error
+  }
+}
