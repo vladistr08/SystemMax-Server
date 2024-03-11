@@ -28,7 +28,7 @@ export default async (
 
     return { items: getChatsResult || [] }
   } catch (e) {
-    log.error(`Error at Update Resolver: ${e?.message}`)
-    throw new Error(`Error at Update Resolver: ${e?.message}`)
+    log.error(`Error at getUserChatRecords Resolver: ${e?.message}`)
+    throw new Error(`Error at getUserChatRecords Resolver: ${e?.message}`)
   }
 }

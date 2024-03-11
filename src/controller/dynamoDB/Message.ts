@@ -47,3 +47,5 @@ export const getMessages = async ({
     return []
   }
 }
+
+//TODO getMessagesByChatName

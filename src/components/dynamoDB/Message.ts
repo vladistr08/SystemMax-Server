@@ -69,6 +69,8 @@ class MessageDB {
     }
   }
 
+  //TODO getMessagesByName
+
   public async getMessages({
     messageId,
   }: GetMessageParams): Promise<IMessage[] | null> {

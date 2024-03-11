@@ -83,10 +83,11 @@ type getUserChatsResult {
 
 input getUserChatInput{
     chatId: String!
+    chatName: String
 }
 
 type Message {
-    messageId: String
+    chatId: String
     messageIndex: String
     message: String
 }

@@ -2,10 +2,10 @@ import { IContext } from 'types' // Presupunem că ai acest tip definit undeva
 import { isValidUser } from '../../config/auth'
 import { getMessages } from '../../controller/dynamoDB/Message'
 import log from '../../components/log'
-import { getChatsByUserId } from '../../controller/dynamoDB/UserChat'
 
 interface IGetUserChatInput {
   chatId: string
+  chatName?: string
 }
 
 interface IMessage {
@@ -28,22 +28,16 @@ export default async (
     if (!context.user || !authResult.isValid) {
       throw new Error(authResult.message)
     }
-    const { chatId } = input
-
-    const userChatLink = await getChatsByUserId(context.user.userId)
-    if (!userChatLink.length) {
-      return { items: [] }
+    const messages = await getMessages({ messageId: input.chatId })
+    if (!messages.length && input.chatName) {
+      // TODO find by name
     }
-
-    const messageId = chatId
-
-    const messages = await getMessages({ messageId })
 
     return {
       items: messages,
     }
   } catch (e) {
     log.error(`Error at getUserChat Resolver: ${e.message}`)
-    throw new Error(`Failed to get chat messages: ${e.message}`)
+    throw new Error(`Error at getUserChat Resolver: ${e.message}`)
   }
 }

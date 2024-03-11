@@ -5,6 +5,7 @@ import { IChat } from '../../components/dynamoDB/Chat'
 interface ICreateChatParams {
   chatId: string
   createdAt: string
+  chatName: string
 }
 
 interface IGetChatParams {
@@ -14,10 +15,11 @@ interface IGetChatParams {
 export const createChat = async ({
   chatId,
   createdAt,
+  chatName,
 }: ICreateChatParams): Promise<boolean> => {
   const chatDBClient = ChatDB.getInstance()
   try {
-    const success = await chatDBClient.addChat({ chatId, createdAt })
+    const success = await chatDBClient.addChat({ chatId, createdAt, chatName })
     if (success) {
       return true
     } else {
@@ -45,5 +47,29 @@ export const getChat = async ({
   } catch (error) {
     log.error(`Error retrieving chat with ID ${chatId}: ${error.message}`)
     return null
+  }
+}
+
+interface IDeleteChatParams {
+  chatId: string
+}
+
+export const deleteChat = async ({
+  chatId,
+}: IDeleteChatParams): Promise<boolean> => {
+  const chatDBClient = ChatDB.getInstance()
+  try {
+    const success = await chatDBClient.deleteChat({ chatId })
+    if (success) {
+      return true
+    } else {
+      log.error('Failed to delete chat record')
+      return false
+    }
+  } catch (error) {
+    log.error(
+      `Error deleting chat record for chat ID ${chatId}: ${error.message}`,
+    )
+    return false
   }
 }

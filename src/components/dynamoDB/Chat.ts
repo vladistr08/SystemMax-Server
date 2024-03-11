@@ -1,5 +1,6 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import {
+  DeleteCommand,
   DynamoDBDocumentClient,
   GetCommand,
   PutCommand,
@@ -23,6 +24,10 @@ export interface IChat {
   chatName: string
 }
 
+interface DeleteChatParams {
+  chatId: string
+}
+
 class ChatDB {
   private static instance: ChatDB
   private static client: DynamoDBDocumentClient
@@ -39,6 +44,22 @@ class ChatDB {
       ChatDB.instance = new ChatDB()
     }
     return ChatDB.instance
+  }
+
+  public async deleteChat({ chatId }: DeleteChatParams): Promise<boolean> {
+    try {
+      await ChatDB.client.send(
+        new DeleteCommand({
+          TableName: env.DYNAMODB_CHAT_TABLE_NAME,
+          Key: { chat_id: chatId },
+        }),
+      )
+
+      return true
+    } catch (error) {
+      log.error(`Error deleting chat record for chat ID ${chatId}: ${error}`)
+      return false
+    }
   }
 
   public async addChat({

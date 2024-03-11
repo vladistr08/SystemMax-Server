@@ -37,7 +37,7 @@ export default async (
 
     return { token: newToken }
   } catch (e) {
-    log.error(`Error at Login Resolver ${e.message}`)
+    log.error(`Error at Refresh token Resolver ${e.message}`)
     return ResultEmptyObject
   }
 }

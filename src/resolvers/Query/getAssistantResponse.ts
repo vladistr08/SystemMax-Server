@@ -2,13 +2,11 @@ import { getAssistantResponse } from '../../controller/openai/Assistent'
 import log from '../../components/log'
 import { IContext } from 'types'
 import { isValidUser } from '../../config/auth'
-import { addMessage, getMessages } from '../../controller/dynamoDB/Message' // Presupunând că ai modulele necesare
-import { createChat } from '../../controller/dynamoDB/Chat'
-import { createChatRecord } from '../../controller/dynamoDB/UserChat'
-import { v4 as uuidv4 } from 'uuid'
+import { addMessage, getMessages } from '../../controller/dynamoDB/Message'
+import { getChat } from '../../controller/dynamoDB/Chat'
 
 interface IGetAssistantResponseInput {
-  chatId?: string // TODO This will no longer be optional in the future
+  chatId: string
   message: string
 }
 
@@ -25,32 +23,18 @@ export default async (
   try {
     const { chatId, message } = input
 
-    let chatIdVerified = chatId || ''
     const authResult = await isValidUser(context)
     if (!context.user || !authResult.isValid) {
       throw new Error(authResult.message)
     }
 
-    const assistantMessage = await getAssistantResponse({ message })
-
-    if (!chatId) {
-      chatIdVerified = uuidv4()
-      const createChatResult = await createChat({
-        chatId: chatIdVerified,
-        createdAt: new Date().toISOString(),
-      })
-      if (!createChatResult) {
-        throw new Error('No chat was created')
-      }
-      await createChatRecord({
-        chatId: chatIdVerified,
-        userId: context.user.userId,
-      })
+    if (!(await getChat({ chatId }))) {
+      throw new Error('Chat does not exist you hacker!')
     }
 
-    const messageId = chatIdVerified ? chatIdVerified : uuidv4()
+    const assistantMessage = await getAssistantResponse({ message })
 
-    const messages = await getMessages({ messageId })
+    const messages = await getMessages({ messageId: chatId })
 
     const lastMessageIndex =
       messages.length > 0
@@ -58,20 +42,20 @@ export default async (
         : -1
 
     await addMessage({
-      messageId: messageId,
+      messageId: chatId,
       messageIndex: lastMessageIndex + 1,
       message: message,
     })
 
     await addMessage({
-      messageId: messageId,
+      messageId: chatId,
       messageIndex: lastMessageIndex + 2,
       message: assistantMessage,
     })
 
-    return { message: assistantMessage, chatId: chatIdVerified }
+    return { message: assistantMessage, chatId }
   } catch (e) {
     log.error(`Error at getAssistantResponse Resolver: ${e.message}`)
-    throw new Error(`Failed to get response from the assistant: ${e.message}`)
+    throw new Error(`Error at getAssistantResponse Resolver: ${e.message}`)
   }
 }
