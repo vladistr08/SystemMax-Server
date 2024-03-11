@@ -15,8 +15,6 @@ export default async (
       throw new Error('No token provided')
     }
 
-    console.log(context.user)
-
     await addToBlacklist(context.user.jti)
 
     return { message: "You've been successfully logged out." }

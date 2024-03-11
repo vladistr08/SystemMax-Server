@@ -83,7 +83,7 @@ type getUserChatsResult {
     items: [Chat]
 }
 
-input getUserChatInput{
+input getUserMessagesInput{
     chatId: String!
     chatName: String
 }
@@ -94,7 +94,7 @@ type Message {
     message: String
 }
 
-type getUserChatResult {
+type getUserMessagesResult {
     items: [Message]
 }
 
@@ -130,7 +130,7 @@ type Query {
     getAssistantResponse(input: getAssistantInput!): getAssistantResult
     refreshToken(input: refreshTokenInput): refreshTokenResult
     getUserChatRecords: getUserChatsResult
-    getUserChat(input: getUserChatInput!): getUserChatResult
+    getUserMessages(input: getUserMessagesInput!): getUserMessagesResult
 
 }
 
