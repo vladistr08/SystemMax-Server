@@ -75,6 +75,8 @@ type refreshTokenResult {
 
 type Chat {
     chatId: String
+    chatName: String
+    createdAt: String
 }
 
 type getUserChatsResult {

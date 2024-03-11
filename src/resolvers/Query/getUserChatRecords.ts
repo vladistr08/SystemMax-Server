@@ -2,10 +2,11 @@ import log from '../../components/log'
 import { IContext } from 'types'
 import { isValidUser } from '../../config/auth'
 import { getChatsByUserId } from '../../controller/dynamoDB/UserChat'
-import { IChatID } from '../../components/dynamoDB/UserChat'
-
+import * as Bluebird from 'bluebird'
+import { getChat } from '../../controller/dynamoDB/Chat'
+import { IChat } from '../../components/dynamoDB/Chat'
 interface IGetUserChatsResult {
-  items: IChatID[]
+  items: IChat[]
 }
 
 export default async (
@@ -26,7 +27,19 @@ export default async (
       log.error(`No chats found for userId: ${context.user.userId}`)
     }
 
-    return { items: getChatsResult || [] }
+    const chatDataMapped: IChat[] = await Bluebird.mapSeries(
+      getChatsResult,
+      async ({ chatId }): Promise<IChat> => {
+        const chatData = await getChat({ chatId })
+        return {
+          chatId,
+          createdAt: chatData ? chatData.createdAt : 'no-data',
+          chatName: chatData ? chatData.chatName : 'no-name',
+        }
+      },
+    )
+
+    return { items: chatDataMapped || [] }
   } catch (e) {
     log.error(`Error at getUserChatRecords Resolver: ${e?.message}`)
     throw new Error(`Error at getUserChatRecords Resolver: ${e?.message}`)

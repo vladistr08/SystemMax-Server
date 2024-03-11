@@ -2,8 +2,8 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import {
   DeleteCommand,
   DynamoDBDocumentClient,
-  GetCommand,
   PutCommand,
+  QueryCommand,
 } from '@aws-sdk/lib-dynamodb'
 import env from '../../config/env'
 import log from '../log'
@@ -84,18 +84,21 @@ class ChatDB {
 
   public async getChat({ chatId }: GetChatParams): Promise<IChat | null> {
     try {
-      const { Item } = await ChatDB.client.send(
-        new GetCommand({
+      const { Items } = await ChatDB.client.send(
+        new QueryCommand({
           TableName: env.DYNAMODB_CHAT_TABLE_NAME,
-          Key: { chat_id: chatId },
+          KeyConditionExpression: 'chat_id = :chatId',
+          ExpressionAttributeValues: {
+            ':chatId': chatId,
+          },
         }),
       )
 
-      if (Item) {
+      if (Items && Items.length > 0) {
         return {
-          chatId: Item.chatId,
-          createdAt: Item.createdAt,
-          chatName: Item.chat_name,
+          chatId: Items[0].chat_id,
+          chatName: Items[0].chat_name,
+          createdAt: Items[0].createdAt,
         }
       } else {
         log.error(`No chat found with ID ${chatId}`)
