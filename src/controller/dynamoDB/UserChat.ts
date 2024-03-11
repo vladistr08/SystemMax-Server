@@ -44,3 +44,5 @@ export const getChatsByUserId = async (userId: string): Promise<IChatID[]> => {
     throw error
   }
 }
+
+//TODO add delete

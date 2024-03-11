@@ -1,7 +1,7 @@
 import log from '../../components/log'
 import { isValidUser } from '../../config/auth'
 import { IContext } from 'types'
-import { deleteChat, getChat } from '../../controller/dynamoDB/Chat'
+import { deleteChat } from '../../controller/dynamoDB/Chat'
 
 interface IRemoveChatInput {
   chatId: string
@@ -22,13 +22,22 @@ export default async (
       throw new Error(authResult.message)
     }
 
-    if (!(await getChat({ chatId: input.chatId }))) {
-      log.error('Chat already exists')
-      return { isRemoved: false }
+    const isRemoved = await deleteChat({ chatId: input.chatId })
+    if (!isRemoved) {
+      throw new Error('Cannot delete chat')
     }
 
-    const isRemoved = await deleteChat({ chatId: input.chatId })
-    return { isRemoved }
+    // const isRemovedLink = await deleteChatRecord({ chatId: input.chatId })
+    // if (!isRemovedLink) {
+    //   throw new Error('Cannot delete chat link')
+    // }
+    //
+    // const isRemovedMessage = await deleteMessage({ chatId: input.chatId })
+    // if (!isRemovedMessage) {
+    //   throw new Error('Cannot delete messages')
+    // }
+    return { isRemoved: isRemoved }
+    // return { isRemoved: isRemoved && isRemovedLink && isRemovedMessage }
   } catch (e) {
     log.error('Error at remove chat resolver')
     throw new Error('Error at remove chat resolver')

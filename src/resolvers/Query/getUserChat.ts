@@ -28,13 +28,13 @@ export default async (
     if (!context.user || !authResult.isValid) {
       throw new Error(authResult.message)
     }
-    const messages = await getMessages({ messageId: input.chatId })
+    const messages = await getMessages({ chatId: input.chatId })
     if (!messages.length && input.chatName) {
       // TODO find by name
     }
 
     return {
-      items: messages,
+      items: messages.sort((a, b) => a.messageIndex - b.messageIndex),
     }
   } catch (e) {
     log.error(`Error at getUserChat Resolver: ${e.message}`)

@@ -9,13 +9,13 @@ import log from '../log'
 import { v4 as uuidv4 } from 'uuid'
 
 interface AddMessageParams {
-  messageId: string
+  chatId: string
   messageIndex: number
   message: string
 }
 
 interface GetMessageParams {
-  messageId: string
+  chatId: string
 }
 
 export interface IMessage {
@@ -43,7 +43,7 @@ class MessageDB {
   }
 
   public async addMessage({
-    messageId,
+    chatId,
     messageIndex,
     message,
   }: AddMessageParams): Promise<boolean> {
@@ -52,8 +52,8 @@ class MessageDB {
         new PutCommand({
           TableName: env.DYNAMODB_MESSAGE_TABLE_NAME,
           Item: {
-            message_UUID: uuidv4(),
-            message_id: messageId,
+            message_id: uuidv4(),
+            chat_id: chatId,
             message_index: messageIndex,
             message,
           },
@@ -63,7 +63,7 @@ class MessageDB {
       return true
     } catch (error) {
       log.error(
-        `Error adding message with ID: ${messageId} and Index: ${messageIndex}: ${error}`,
+        `Error adding message with ID: ${chatId} and Index: ${messageIndex}: ${error}`,
       )
       return false
     }
@@ -72,31 +72,31 @@ class MessageDB {
   //TODO getMessagesByName
 
   public async getMessages({
-    messageId,
+    chatId,
   }: GetMessageParams): Promise<IMessage[] | null> {
     try {
       const { Items } = await MessageDB.client.send(
         new ScanCommand({
           TableName: env.DYNAMODB_MESSAGE_TABLE_NAME,
-          FilterExpression: 'message_id = :messageId',
+          FilterExpression: 'chat_id = :chatId',
           ExpressionAttributeValues: {
-            ':messageId': messageId,
+            ':chatId': chatId,
           },
         }),
       )
 
       if (Items) {
         return Items.map((item) => ({
-          chatId: item.message_id,
+          chatId: item.chat_id,
           messageIndex: item.message_index,
           message: item.message,
         })) as IMessage[]
       } else {
-        log.info(`No messages found with ID: ${messageId}`)
+        log.info(`No messages found with ID: ${chatId}`)
         return null
       }
     } catch (error) {
-      log.error(`Error retrieving messages with ID: ${messageId}: ${error}`)
+      log.error(`Error retrieving messages with ID: ${chatId}: ${error}`)
       return null
     }
   }

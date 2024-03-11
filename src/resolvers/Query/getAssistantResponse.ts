@@ -34,7 +34,7 @@ export default async (
 
     const assistantMessage = await getAssistantResponse({ message })
 
-    const messages = await getMessages({ messageId: chatId })
+    const messages = await getMessages({ chatId })
 
     const lastMessageIndex =
       messages.length > 0
@@ -42,13 +42,13 @@ export default async (
         : -1
 
     await addMessage({
-      messageId: chatId,
+      chatId,
       messageIndex: lastMessageIndex + 1,
       message: message,
     })
 
     await addMessage({
-      messageId: chatId,
+      chatId,
       messageIndex: lastMessageIndex + 2,
       message: assistantMessage,
     })
