@@ -73,3 +73,27 @@ export const deleteChat = async ({
     return false
   }
 }
+
+interface IUpdateChatNameParams {
+  chatId: string
+  chatName: string
+}
+
+export const updateChatName = async ({
+  chatId,
+  chatName,
+}: IUpdateChatNameParams): Promise<boolean> => {
+  const chatDBClient = ChatDB.getInstance()
+  try {
+    const success = await chatDBClient.updateChatName({ chatId, chatName })
+    if (success) {
+      return true
+    } else {
+      log.error('Failed to update chat name')
+      return false
+    }
+  } catch (error) {
+    log.error(`Error updating chat name: ${error.message}`)
+    return false
+  }
+}

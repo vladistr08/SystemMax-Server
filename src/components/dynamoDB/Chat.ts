@@ -4,6 +4,7 @@ import {
   DynamoDBDocumentClient,
   PutCommand,
   QueryCommand,
+  UpdateCommand,
 } from '@aws-sdk/lib-dynamodb'
 import env from '../../config/env'
 import log from '../log'
@@ -26,6 +27,11 @@ export interface IChat {
 
 interface DeleteChatParams {
   chatId: string
+}
+
+interface UpdateChatNameParams {
+  chatId: string
+  chatName: string
 }
 
 class ChatDB {
@@ -107,6 +113,29 @@ class ChatDB {
     } catch (error) {
       log.error(`Error retrieving chat with ID ${chatId}: ${error}`)
       return null
+    }
+  }
+
+  public async updateChatName({
+    chatId,
+    chatName,
+  }: UpdateChatNameParams): Promise<boolean> {
+    try {
+      await ChatDB.client.send(
+        new UpdateCommand({
+          TableName: env.DYNAMODB_CHAT_TABLE_NAME,
+          Key: { chat_id: chatId },
+          UpdateExpression: 'set chat_name = :chatName',
+          ExpressionAttributeValues: {
+            ':chatName': chatName,
+          },
+        }),
+      )
+
+      return true
+    } catch (error) {
+      log.error(`Error updating chat name for chat ID ${chatId}: ${error}`)
+      return false
     }
   }
 }

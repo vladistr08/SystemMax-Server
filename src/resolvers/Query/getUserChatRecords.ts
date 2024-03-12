@@ -39,7 +39,11 @@ export default async (
       },
     )
 
-    return { items: chatDataMapped || [] }
+    const sortedData = chatDataMapped.sort((a, b) => {
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    })
+
+    return { items: sortedData || [] }
   } catch (e) {
     log.error(`Error at getUserChatRecords Resolver: ${e?.message}`)
     throw new Error(`Error at getUserChatRecords Resolver: ${e?.message}`)

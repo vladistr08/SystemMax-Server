@@ -116,6 +116,14 @@ type createChatResult{
     isCreated: Boolean
 }
 
+input updateChatInput {
+    chatId: String!
+    chatName: String!
+}
+
+type updateChatResult {
+    isUpdated: Boolean
+}
 
 type Query {
     """
@@ -147,6 +155,7 @@ type Mutation {
     logoutUser: LogoutResponse
     removeChat(input: removeChatInput!): removeChatResult
     createChat(input: createChatInput!): createChatResult
+    updateChat(input: updateChatInput!): updateChatResult
 }
 
 schema {

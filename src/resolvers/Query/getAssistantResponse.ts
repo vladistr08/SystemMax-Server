@@ -28,6 +28,8 @@ export default async (
       throw new Error(authResult.message)
     }
 
+    console.log({ chatIdMesssage: chatId })
+
     if (!(await getChat({ chatId }))) {
       throw new Error('Chat does not exist you hacker!')
     }
