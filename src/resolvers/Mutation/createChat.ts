@@ -1,9 +1,9 @@
 import log from '../../components/log'
 import { createChatRecord } from '../../controller/dynamoDB/UserChat'
-import { v4 as uuidv4 } from 'uuid'
 import { isValidUser } from '../../config/auth'
 import { IContext } from 'types'
 import { createChat, getChat, deleteChat } from '../../controller/dynamoDB/Chat'
+import { createThread } from '../../controller/openai/Assistent'
 
 interface ICreateChatInput {
   chatName: string
@@ -24,7 +24,7 @@ export default async (
     if (!context.user || !authResult.isValid) {
       throw new Error(authResult.message)
     }
-    const chatId = uuidv4()
+    const chatId = await createThread()
 
     if (await getChat({ chatId })) {
       return {

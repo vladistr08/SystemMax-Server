@@ -34,9 +34,14 @@ export default async (
       throw new Error('Chat does not exist you hacker!')
     }
 
-    const assistantMessage = await getAssistantResponse({ message })
+    const assistantMessage = await getAssistantResponse({
+      message,
+      messageId: chatId,
+    })
 
-    const messages = await getMessages({ chatId })
+    const threadId = assistantMessage.threadId
+
+    const messages = await getMessages({ chatId: threadId })
 
     const lastMessageIndex =
       messages.length > 0
@@ -44,18 +49,21 @@ export default async (
         : -1
 
     await addMessage({
-      chatId,
+      chatId: threadId,
       messageIndex: lastMessageIndex + 1,
       message: message,
     })
 
     await addMessage({
-      chatId,
+      chatId: threadId,
       messageIndex: lastMessageIndex + 2,
-      message: assistantMessage,
+      message: assistantMessage.response,
     })
 
-    return { message: assistantMessage, chatId }
+    return {
+      message: assistantMessage.response,
+      chatId: assistantMessage.threadId,
+    }
   } catch (e) {
     log.error(`Error at getAssistantResponse Resolver: ${e.message}`)
     throw new Error(`Error at getAssistantResponse Resolver: ${e.message}`)

@@ -22,6 +22,7 @@ interface IEnv {
   JWT_SECRET_KEY: string
   REDIS_CONNECTION_URL: string
   OPENAI_API_KEY: string
+  OPENAI_ASSISTANT_ID: string
 }
 
 const defaults: IEnv = {
@@ -39,6 +40,7 @@ const defaults: IEnv = {
   JWT_SECRET_KEY: '',
   REDIS_CONNECTION_URL: '',
   OPENAI_API_KEY: '',
+  OPENAI_ASSISTANT_ID: '',
 }
 
 const env: IEnv = {
