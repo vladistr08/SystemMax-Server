@@ -10,16 +10,16 @@ interface IUserRegistrationParams {
 }
 
 interface IUserLoginParams {
-  user_id: string
+  userId: string
   password: string
 }
 
 interface IUserUpdateParams {
-  user_id: string
+  userId: string
   updates: Partial<IUserRegistrationParams>
 }
 
-const registerUser = async (
+export const registerUser = async (
   params: IUserRegistrationParams,
 ): Promise<IUser | null> => {
   const userDBClient = UserDBClient.getInstance()
@@ -31,7 +31,9 @@ const registerUser = async (
   }
 }
 
-const loginUser = async (params: IUserLoginParams): Promise<IUser | null> => {
+export const loginUser = async (
+  params: IUserLoginParams,
+): Promise<IUser | null> => {
   const userDBClient = UserDBClient.getInstance()
   try {
     return await userDBClient.loginUser(params)
@@ -41,7 +43,7 @@ const loginUser = async (params: IUserLoginParams): Promise<IUser | null> => {
   }
 }
 
-const findUserByEmail = async (email: string): Promise<IUser | null> => {
+export const findUserByEmail = async (email: string): Promise<IUser | null> => {
   const userDBClient = UserDBClient.getInstance()
   try {
     return await userDBClient.findUserByEmail(email)
@@ -51,7 +53,7 @@ const findUserByEmail = async (email: string): Promise<IUser | null> => {
   }
 }
 
-const findUserById = async (user_id: string): Promise<IUser | null> => {
+export const findUserById = async (user_id: string): Promise<IUser | null> => {
   const userDBClient = UserDBClient.getInstance()
   try {
     return await userDBClient.findUserById(user_id)
@@ -61,7 +63,9 @@ const findUserById = async (user_id: string): Promise<IUser | null> => {
   }
 }
 
-const updateUser = async (params: IUserUpdateParams): Promise<boolean> => {
+export const updateUser = async (
+  params: IUserUpdateParams,
+): Promise<boolean> => {
   const userDBClient = UserDBClient.getInstance()
   try {
     return await userDBClient.updateUser(params)
@@ -70,5 +74,3 @@ const updateUser = async (params: IUserUpdateParams): Promise<boolean> => {
     return false
   }
 }
-
-export { registerUser, loginUser, findUserByEmail, findUserById, updateUser }

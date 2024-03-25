@@ -16,8 +16,13 @@ interface IEnv {
 
   // Mandatory
   DYNAMODB_USER_TABLE_NAME: string
+  DYNAMODB_USER_CHAT_TABLE_NAME: string
+  DYNAMODB_CHAT_TABLE_NAME: string
+  DYNAMODB_MESSAGE_TABLE_NAME: string
   JWT_SECRET_KEY: string
   REDIS_CONNECTION_URL: string
+  OPENAI_API_KEY: string
+  OPENAI_ASSISTANT_ID: string
 }
 
 const defaults: IEnv = {
@@ -29,8 +34,13 @@ const defaults: IEnv = {
 
   // Mandatory
   DYNAMODB_USER_TABLE_NAME: '',
+  DYNAMODB_USER_CHAT_TABLE_NAME: '',
+  DYNAMODB_CHAT_TABLE_NAME: '',
+  DYNAMODB_MESSAGE_TABLE_NAME: '',
   JWT_SECRET_KEY: '',
   REDIS_CONNECTION_URL: '',
+  OPENAI_API_KEY: '',
+  OPENAI_ASSISTANT_ID: '',
 }
 
 const env: IEnv = {

@@ -25,14 +25,13 @@ class RedisBlacklist {
       await RedisBlacklist.client.set(jti, 'blacklisted', { EX: 3600 })
     } catch (error) {
       log.error(`Error adding token to blacklist: ${error}`)
-      throw error // Rethrow to allow further handling if necessary
+      throw error
     }
   }
 
   public async isBlacklisted(jti: string): Promise<boolean> {
     try {
       const result = await RedisBlacklist.client.get(jti)
-      log.info(result)
       return result === 'blacklisted'
     } catch (error) {
       log.error(`Error checking if token is blacklisted: ${error}`)
@@ -45,7 +44,7 @@ class RedisBlacklist {
       await RedisBlacklist.client.del(jti)
     } catch (error) {
       log.error(`Error removing token from blacklist: ${error}`)
-      throw error // Rethrow to allow further handling if necessary
+      throw error
     }
   }
 }

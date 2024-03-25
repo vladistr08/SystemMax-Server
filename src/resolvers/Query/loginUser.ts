@@ -31,7 +31,7 @@ export default async (
     }
 
     const loginResult = await loginUser({
-      user_id,
+      userId: user_id,
       password: input.password,
     })
 

@@ -55,6 +55,76 @@ type getUserResult {
     user: User
 }
 
+input getAssistantInput {
+    chatId: String
+    message: String!
+}
+
+type getAssistantResult {
+    message: String
+    chatId: String
+}
+
+input refreshTokenInput {
+    token: String!
+}
+
+type refreshTokenResult {
+    token: String
+}
+
+type Chat {
+    chatId: String
+    chatName: String
+    createdAt: String
+}
+
+type getUserChatsResult {
+    items: [Chat]
+}
+
+input getUserMessagesInput{
+    chatId: String!
+    chatName: String
+}
+
+type Message {
+    chatId: String
+    messageIndex: String
+    message: String
+}
+
+type getUserMessagesResult {
+    items: [Message]
+}
+
+
+input removeChatInput {
+    chatId: String!
+}
+
+input createChatInput {
+    chatName: String!
+}
+
+type removeChatResult{
+    isRemoved: Boolean
+}
+
+type createChatResult{
+    chatId: String
+    isCreated: Boolean
+}
+
+input updateChatInput {
+    chatId: String!
+    chatName: String!
+}
+
+type updateChatResult {
+    isUpdated: Boolean
+}
+
 type Query {
     """
     - query for getting the api version
@@ -65,6 +135,10 @@ type Query {
     """
     loginUser(input: loginUserInput!): loginUserResult
     getUser(input: getUserInput): getUserResult
+    getAssistantResponse(input: getAssistantInput!): getAssistantResult
+    refreshToken(input: refreshTokenInput): refreshTokenResult
+    getUserChatRecords: getUserChatsResult
+    getUserMessages(input: getUserMessagesInput!): getUserMessagesResult
 
 }
 
@@ -79,6 +153,9 @@ type Mutation {
     createUser(input: createUserInput!): createUserResult
     updateUser(input: toUpdateUserDataInput!): updateUserResult
     logoutUser: LogoutResponse
+    removeChat(input: removeChatInput!): removeChatResult
+    createChat(input: createChatInput!): createChatResult
+    updateChat(input: updateChatInput!): updateChatResult
 }
 
 schema {

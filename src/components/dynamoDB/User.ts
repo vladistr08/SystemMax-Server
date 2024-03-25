@@ -20,12 +20,12 @@ interface IUserRegistrationParams {
 }
 
 interface IUserLoginParams {
-  user_id: string
+  userId: string
   password: string
 }
 
 interface IUserUpdateParams {
-  user_id: string
+  userId: string
   updates: Partial<IUserRegistrationParams>
 }
 
@@ -70,8 +70,6 @@ class UserDBClient {
         }),
       )
 
-      log.info('User registered successfully')
-
       return user
     } catch (error) {
       log.error(`Error registering user:${error?.message}`)
@@ -80,19 +78,18 @@ class UserDBClient {
   }
 
   public async loginUser({
-    user_id,
+    userId,
     password,
   }: IUserLoginParams): Promise<IUser | null> {
     try {
       const { Item } = await UserDBClient.client.send(
         new GetCommand({
           TableName: env.DYNAMODB_USER_TABLE_NAME,
-          Key: { user_id },
+          Key: { user_id: userId },
         }),
       )
 
       if (Item && (await bcrypt.compare(password, Item?.passwordHash))) {
-        log.info('User logged in successfully')
         return Item as IUser
       } else {
         log.error('Invalid credentials')
@@ -142,7 +139,7 @@ class UserDBClient {
   }
 
   public async updateUser({
-    user_id,
+    userId,
     updates,
   }: IUserUpdateParams): Promise<boolean> {
     const updateExpressions: string[] = []
@@ -172,7 +169,7 @@ class UserDBClient {
 
     const params = {
       TableName: env.DYNAMODB_USER_TABLE_NAME,
-      Key: { user_id },
+      Key: { user_id: userId },
       UpdateExpression: 'SET ' + updateExpressions.join(', '),
       ExpressionAttributeValues: expressionAttributeValues,
       ExpressionAttributeNames: expressionAttributeNames,
@@ -180,7 +177,6 @@ class UserDBClient {
 
     try {
       await UserDBClient.client.send(new UpdateCommand(params))
-      log.info('User updated successfully')
       return true
     } catch (error) {
       log.error('Error updating user:', error)
